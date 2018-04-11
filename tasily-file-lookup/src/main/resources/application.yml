@@ -1,0 +1,30 @@
+server:
+  port: 8900
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/tasily_file?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    test-on-borrow: false
+    test-while-idel: true
+    time-between-eviction-runs-millis: 3600000
+    tomcat:
+      max-wait: 10000
+      max-active: 50
+  http:
+    encoding:
+      force: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+      max_fetch_depth: 2
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        max_fetch_depth: 2
+        format_sql: true
+    show-sql: false
+
