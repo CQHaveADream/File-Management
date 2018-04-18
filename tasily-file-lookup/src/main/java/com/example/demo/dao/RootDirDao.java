@@ -8,15 +8,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 
-public interface RootDirDao extends JpaRepository<RootDirectory,Serializable> {
+public interface RootDirDao extends JpaRepository<RootDirectory, Serializable> {
 
     @Query("select r from RootDirectory r where r.id = ?1")
     RootDirectory findRootDirectoryById(Integer id);
 
     @Transactional
     @Modifying
-    @Query(value = "insert into root_directory (id, rootPath) values (?1,?2)", nativeQuery = true)
-    void addRootDirectory(Integer id, String rootPath);
+    @Query(value = "insert into root_directory (id, RootPath) values (1, ?1) ", nativeQuery = true)
+    void addRootPath(String rootPath);
 
     @Transactional
     @Modifying

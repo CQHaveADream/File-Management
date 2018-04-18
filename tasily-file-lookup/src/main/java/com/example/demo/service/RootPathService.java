@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.demo.dao.FileMessageDao;
 import com.example.demo.dao.RootDirDao;
 import com.example.demo.domain.FileMessage;
+import com.example.demo.domain.LabelType;
 import com.example.demo.domain.RootDirectory;
 import com.example.demo.util.TasilyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,26 +32,36 @@ public class RootPathService {
     @Autowired
     private FileMessageDao fileMessageDao;
 
+    @Autowired
+    private LabelTypeService labelTypeService;
+
     public JSONObject checkRootDirectory(){
         RootDirectory directory = rootDirDao.findRootDirectoryById(1);
         if (directory == null){ return tasilyUtil.info("RootPathNotExist"); }
         String rootPath = directory.getRootPath();
+        List<LabelType> labelTypes = labelTypeService.findAllLabelType();
         JSONObject object = tasilyUtil.getFilesMsg(rootPath);
+        object.put("labelTypes",labelTypes);
         object.put("rootPath", rootPath);
         return object;
     }
 
     @Transactional
     public JSONObject saveOrModifyRootPath(String rootPath, boolean addFlag, boolean updateFlag){
+        File rootFile = new File(rootPath);
+        if (rootFile.lastModified() == 0) return tasilyUtil.info("filePathNotExist");
         if (addFlag == false && updateFlag == false) return tasilyUtil.info("NoStatus");
-        if (addFlag) rootDirDao.addRootDirectory(1, rootPath);
+        if (addFlag) { rootDirDao.addRootPath(rootPath); }
         if (updateFlag) {
             String dataPath = rootDirDao.findRootPathById(1);
-            if (rootPath.equals(dataPath))return tasilyUtil.info("ThePathAlreadyExist");
-            rootDirDao.updateRootPath(rootPath);
+            if (rootPath.equals(dataPath)){
+                return tasilyUtil.info("ThePathAlreadyExist");
+            }else {
+                rootDirDao.updateRootPath(rootPath);
+            }
         }
         this.HandelFiles(rootPath);
-        return tasilyUtil.info(null);
+        return tasilyUtil.info("success");
     }
 
     //递归

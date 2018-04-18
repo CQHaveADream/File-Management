@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 
-public interface UserDao extends JpaRepository<User,Serializable>{
+public interface UserDao extends JpaRepository<User, Serializable>{
 
     @Query("select u from User u where u.name = ?1")
     User findUserByName(String name);

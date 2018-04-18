@@ -31,25 +31,35 @@ public class FileService {
             fileMessageDao.deleteFileMessageByAbsolutePath(absolutePath);
             return tasilyUtil.info("TheFileDeleteSuccess");
         }
-        Runtime.getRuntime().exec("cmd /c " + absolutePath);
-        return tasilyUtil.info("OpenTargetFileSuccess");
+        Process process = Runtime.getRuntime().exec("cmd /c " + absolutePath);
+        if (process != null)  return tasilyUtil.info("OpenTargetFileSuccess");
+        return tasilyUtil.info("OpenTargetFileFail");
     }
 
     @Transactional
-    public void addLabel(String label, String path){
-        fileMessageDao.addLabelByPath(label, path);
+    public void addLabel(String label, String path, String labelType){
+        fileMessageDao.addLabelByPath(label, labelType, path);
     }
 
-    public List<FileMessage> findFilesByType(String path, String type){
-        return fileMessageDao.findFilesLikeLabel(tasilyUtil.HandelPath(path), type);
-    }
+    public List<FileMessage> findFilesByType(String path, String type, String labelType){
+        if (labelType != null){
+            return fileMessageDao.findFilesLikeLabelAndLabelType(tasilyUtil.HandelPath(path), type, labelType);
+        }else {
+            return fileMessageDao.findFilesLikeLabel(tasilyUtil.HandelPath(path), type);
+        }
 
-    public List<FileMessage> findFilesByFileName(String path, String fileName){
-        return fileMessageDao.findFilesLikeFileName(tasilyUtil.HandelPath(path), fileName);
     }
 
     public List<String> findAllFileAbsolute(String path){
        return fileMessageDao.findAllAbsolute("%" + tasilyUtil.HandelPath(path) + "%");
+    }
+
+    public List<FileMessage> findByLabelType(String labelType){
+        return fileMessageDao.findFileMessagesLikeLabelType("%" + labelType + "%");
+    }
+
+    public void deleteLabelType(String newType, String labelType){
+        fileMessageDao.updateLabelType(newType, labelType);
     }
 
 }
