@@ -18,14 +18,17 @@ public class FileMessage {
     private String label;
     private String absolutePath; //文件的绝对路径
     private Long lastModifyTime;
+    private String labelType; //标签分类
 
     public FileMessage() {
     }
 
-    public FileMessage(String fileName, String label, String absolutePath) {
+    public FileMessage(String fileName, String label, String absolutePath, Long lastModifyTime, String labelType) {
         this.fileName = fileName;
         this.label = label;
         this.absolutePath = absolutePath;
+        this.lastModifyTime = lastModifyTime;
+        this.labelType = labelType;
     }
 
     public String getFileName() {
@@ -60,4 +63,8 @@ public class FileMessage {
     public void setLastModifyTime(Long lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
     }
+
+    public String getLabelType() { return labelType; }
+
+    public void setLabelType(String labelType) { this.labelType = labelType; }
 }

@@ -73,13 +73,16 @@ public class TasilyUtil {
 
     public JSONObject getFilesMsg(String Path){
         File rootFile = new File(Path);
-        if (rootFile.lastModified() == 0) return this.info("filePathNotExist!");
+        if (rootFile.lastModified() == 0) return this.info("filePathNotExist");
         File[] files = rootFile.listFiles();
         List<FileMessage> list = new ArrayList<>();
         for (File file : files){
             FileMessage fileMessage = new FileMessage();
-            String label = fileMessageDao.findLabelByAbsolutePath(file.getAbsolutePath());
-            fileMessage.setLabel(label);
+            FileMessage dbFile = fileMessageDao.findFileMessageByAbsolutePath(file.getAbsolutePath());
+            if (dbFile !=null){
+                if (dbFile.getLabel() != null ){ fileMessage.setLabel(dbFile.getLabel()); }
+                if (dbFile.getLabelType()!= null){ fileMessage.setLabelType(dbFile.getLabelType()); }
+            }
             fileMessage.setFileName(file.getName());
             fileMessage.setAbsolutePath(file.getAbsolutePath());
             fileMessage.setLastModifyTime(file.lastModified());

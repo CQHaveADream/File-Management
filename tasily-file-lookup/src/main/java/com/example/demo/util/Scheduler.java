@@ -56,7 +56,7 @@ public class Scheduler {
     public List<Object[]> getFilesNameByLocalMC(List<Object[]> list, String rootPath) {
         File[] files = new File(rootPath).listFiles();
         for (File file : files) {
-            if (file.isDirectory()){ //是文件夹
+            if (file.isDirectory() && !file.isHidden()){ //是非隐藏文件
                 getFilesNameByLocalMC(list, file.getAbsolutePath());
             }else if (file.isFile()){ //是文件
                 list.add(new Object[]{file.getName(), file.getAbsolutePath(), file.lastModified()});

@@ -53,8 +53,7 @@ public class FileController {
         boolean addFlag = code.containsKey("add")? code.getBoolean("add") : false;
         boolean updateFlag = code.containsKey("update")? code.getBoolean("update") : false;
         if ("".equals(rootPath) || rootPath == null) return tasilyUtil.info("NoRootPath");
-        rootPathService.saveOrModifyRootPath(rootPath, addFlag, updateFlag);
-        JSONObject object = new JSONObject();
+        JSONObject object = rootPathService.saveOrModifyRootPath(rootPath, addFlag, updateFlag);
         object.put("rootPath", rootPath);
         return object;
     }
@@ -90,24 +89,24 @@ public class FileController {
      */
     @RequestMapping(value = "/insertLabel.form", method = RequestMethod.POST)
     private JSONObject insertLabel(@RequestBody JSONObject code){
-        String label = code.getString("label");
-        String absolutePath = code.getString("absolutePath");
-        if ("".equals(label) || absolutePath == null) return tasilyUtil.info("NoLabel");
-        if ("".equals(absolutePath) || absolutePath == null) return tasilyUtil.info("NoAbsolutePath");
-        fileService.addLabel(label, absolutePath);
+        String label = code.containsKey("label")? code.getString("label") : null;
+        String absolutePath = code.containsKey("absolutePath")? code.getString("absolutePath") : null;
+        String labelType = code.containsKey("labelType")? code.getString("labelType") : null;
+        fileService.addLabel(label, absolutePath, labelType);
         return tasilyUtil.info("InsertLabelSuccess");
     }
 
     /**
-     * 根据标签类型查询
+     * 根据描述或文件名查询
      * @param code
      * @return
      */
     @RequestMapping(value = "/findFilesByLabelOrFileName.form", method = RequestMethod.POST)
     private List<FileMessage> findFilesByLabelOrFileName(@RequestBody JSONObject code){
+        String labelType = code.containsKey("labelType")? code.getString("labelType") : null;
         String filePath = code.containsKey("path")? code.getString("path") : null;
         String type = code.containsKey("label")? code.getString("label") : null;
-        return fileService.findFilesByType(filePath, type);
+        return fileService.findFilesByType(filePath, type, labelType);
     }
 
     /**
@@ -118,6 +117,17 @@ public class FileController {
     private List<String> findAllAbsolute(@RequestBody JSONObject code){
         String path = code.containsKey("path")? code.getString("path") : null;
         return fileService.findAllFileAbsolute(path);
+    }
+
+    /**
+     * 根据标签类型查询
+     * @param code
+     * @return
+     */
+    @RequestMapping(value = "/findByLabelType.form", method = RequestMethod.POST)
+    private List<FileMessage> findByLabelType(@RequestBody JSONObject code){
+        String labelType = code.containsKey("labelType")? code.getString("labelType") : null;
+        return fileService.findByLabelType(labelType);
     }
 
 }

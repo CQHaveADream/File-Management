@@ -26,7 +26,6 @@ public class RootDirectory {
     }
 
     @Id
-    @GeneratedValue
     public Integer getId() {
         return id;
     }
