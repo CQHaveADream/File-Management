@@ -34,8 +34,8 @@ public class Scheduler {
         logger.info("once every six minutes , start……");
         Long start = System.currentTimeMillis();
         String rootPath = rootDirDao.findRootDirectoryByMaxId();
-        String capitalPath = rootPath.toUpperCase();
-        if (capitalPath != null){
+        if (rootPath != null){
+            String capitalPath = rootPath.toUpperCase();
             //本机文件 [0] 文件名 [1] 绝对路径 [2] 文件最后修改时间
             List<Object[]> messageList = new ArrayList<>();
             messageList = this.getFilesNameByLocalMC(messageList, capitalPath);
