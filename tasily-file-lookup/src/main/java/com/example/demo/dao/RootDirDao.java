@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.List;
 
 public interface RootDirDao extends JpaRepository<RootDirectory, Serializable> {
 
-    @Query("select r from RootDirectory r where r.id = ?1")
-    RootDirectory findRootDirectoryById(Integer id);
+    @Query(value = "select rootPath from root_directory  where id = (select max(id) from root_directory)", nativeQuery = true)
+    String findRootDirectoryByMaxId();
 
     @Transactional
     @Modifying
@@ -23,8 +24,8 @@ public interface RootDirDao extends JpaRepository<RootDirectory, Serializable> {
     @Query(value = "update root_directory r set r.rootPath = ?1 where r.id = 1", nativeQuery = true)
     void updateRootPath(String rootPath);
 
-    @Query("select r.rootPath from RootDirectory r where r.id = ?1")
-    String findRootPathById(Integer id);
+    @Query("select r.rootPath from RootDirectory r ")
+    List<String> findAllRootPath();
 
 
 }

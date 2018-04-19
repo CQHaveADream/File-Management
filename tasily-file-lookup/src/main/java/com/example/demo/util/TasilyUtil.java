@@ -78,11 +78,7 @@ public class TasilyUtil {
         List<FileMessage> list = new ArrayList<>();
         for (File file : files){
             FileMessage fileMessage = new FileMessage();
-            FileMessage dbFile = fileMessageDao.findFileMessageByAbsolutePath(file.getAbsolutePath());
-            if (dbFile !=null){
-                if (dbFile.getLabel() != null ){ fileMessage.setLabel(dbFile.getLabel()); }
-                if (dbFile.getLabelType()!= null){ fileMessage.setLabelType(dbFile.getLabelType()); }
-            }
+            this.addByDbFileMessage(file, fileMessage);
             fileMessage.setFileName(file.getName());
             fileMessage.setAbsolutePath(file.getAbsolutePath());
             fileMessage.setLastModifyTime(file.lastModified());
@@ -96,6 +92,14 @@ public class TasilyUtil {
     public String HandelPath(String path){
         String newPath = path.replace("\\","\\\\");
         return newPath;
+    }
+
+    public void addByDbFileMessage(File file, FileMessage fileMessage){
+        FileMessage dbFile = fileMessageDao.findFileMessageByAbsolutePath(file.getAbsolutePath());
+        if (dbFile !=null){
+            if (dbFile.getLabel() != null ){ fileMessage.setLabel(dbFile.getLabel()); }
+            if (dbFile.getLabelType()!= null){ fileMessage.setLabelType(dbFile.getLabelType()); }
+        }
     }
 
 }

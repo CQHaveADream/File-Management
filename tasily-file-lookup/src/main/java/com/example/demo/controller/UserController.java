@@ -45,7 +45,7 @@ public class UserController {
         String password = code.getString("password");
         String name = code.getString("name");
         if ("".equals(name) || name == null) return tasilyUtil.info("CheckUserName");
-        if (password.equals("") || password == null) return tasilyUtil.info("CheckPassword");
+        if ("".equals(password) || password == null) return tasilyUtil.info("CheckPassword");
         return userService.updatePassword(password, name);
     }
 }

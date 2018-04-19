@@ -36,9 +36,8 @@ public class RootPathService {
     private LabelTypeService labelTypeService;
 
     public JSONObject checkRootDirectory(){
-        RootDirectory directory = rootDirDao.findRootDirectoryById(1);
-        if (directory == null){ return tasilyUtil.info("RootPathNotExist"); }
-        String rootPath = directory.getRootPath();
+        String rootPath = rootDirDao.findRootDirectoryByMaxId();
+        if (rootPath == null){ return tasilyUtil.info("RootPathNotExist"); }
         List<LabelType> labelTypes = labelTypeService.findAllLabelType();
         JSONObject object = tasilyUtil.getFilesMsg(rootPath);
         object.put("labelTypes",labelTypes);
@@ -48,24 +47,30 @@ public class RootPathService {
 
     @Transactional
     public JSONObject saveOrModifyRootPath(String rootPath, boolean addFlag, boolean updateFlag){
+        String lowerPath = rootPath.toLowerCase();
         File rootFile = new File(rootPath);
         if (rootFile.lastModified() == 0) return tasilyUtil.info("filePathNotExist");
         if (addFlag == false && updateFlag == false) return tasilyUtil.info("NoStatus");
-        if (addFlag) { rootDirDao.addRootPath(rootPath); }
+        if (addFlag) {
+            SaveObject(lowerPath);
+            HandelAddFiles(rootPath);
+        }
         if (updateFlag) {
-            String dataPath = rootDirDao.findRootPathById(1);
-            if (rootPath.equals(dataPath)){
-                return tasilyUtil.info("ThePathAlreadyExist");
+            String dbRoot = rootDirDao.findRootDirectoryByMaxId();
+            if (lowerPath.equals(dbRoot)) return tasilyUtil.info("ThePathAlreadyExist");
+            List<String> dataPath = rootDirDao.findAllRootPath();
+            if (dataPath.contains(lowerPath)){
+                SaveObject(lowerPath);
+                return new JSONObject();
             }else {
-                rootDirDao.updateRootPath(rootPath);
+                SaveObject(lowerPath);
+                HandelAddFiles(rootPath);
             }
         }
-        this.HandelFiles(rootPath);
         return tasilyUtil.info("success");
     }
 
-    //递归
-    public JSONObject HandelFiles(String filePath) {
+    public JSONObject HandelAddFiles(String filePath) {
         File rootFile = new File(filePath);
         if (rootFile.lastModified() == 0) return tasilyUtil.info("filePathNotExist");
         File[] files = rootFile.listFiles();
@@ -73,17 +78,24 @@ public class RootPathService {
         List<FileMessage> messageList = new ArrayList<>();
         for (File file : files) {
             if (file.isDirectory()){ //是文件夹
-                HandelFiles(file.getAbsolutePath());
+                HandelAddFiles(file.getAbsolutePath());
             }else if (file.isFile()){ //是文件
-                FileMessage fileMessage = new FileMessage();
-                fileMessage.setFileName(file.getName());
-                fileMessage.setAbsolutePath(file.getAbsolutePath());
-                fileMessage.setLastModifyTime(file.lastModified());
-                messageList.add(fileMessage);
+                FileMessage Message = new FileMessage();
+                Message.setFileName(file.getName());
+                Message.setAbsolutePath(file.getAbsolutePath());
+                Message.setLastModifyTime(file.lastModified());
+                messageList.add(Message);
             }
         }
         fileMessageDao.saveAll(messageList);
         return tasilyUtil.info("success");
+    }
+
+    @Transactional
+    public void SaveObject(String path){
+        RootDirectory rootDirectory = new RootDirectory();
+        rootDirectory.setRootPath(path);
+        rootDirDao.save(rootDirectory);
     }
 
 }

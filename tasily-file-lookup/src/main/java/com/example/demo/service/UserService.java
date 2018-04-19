@@ -36,7 +36,7 @@ public class UserService {
     public JSONObject login(String name, String password){
         User user = userDao.findUserByName(name);
         if (user == null){ return tasilyUtil.info("UserNotRegister");}
-        if (!password.equalsIgnoreCase(user.getPassword()) || password.equals("") || password == null){
+        if (!password.equalsIgnoreCase(user.getPassword()) || "".equals(password) || password == null){
             return tasilyUtil.info("PasswordNotCorrect");
         }
         return tasilyUtil.info("LoginSuccess");

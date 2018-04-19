@@ -54,7 +54,7 @@ public class LabelTypeController {
     @RequestMapping(value = "/deleteLabelType.form", method = RequestMethod.POST)
     public JSONObject deleteLabelType(@RequestBody JSONObject object){
         String labelName = object.getString("labelName");
-        fileService.deleteLabelType("",labelName);
+        fileService.deleteLabelType("", labelName);
         return labelTypeService.deleteLabelType(labelName);
     }
 

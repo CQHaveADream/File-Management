@@ -33,11 +33,12 @@ public class Scheduler {
     public void statusCheck() {
         logger.info("once every six minutes , start……");
         Long start = System.currentTimeMillis();
-        String rootPath = rootDirDao.findRootPathById(1);
-        if (rootPath != null){
+        String rootPath = rootDirDao.findRootDirectoryByMaxId();
+        String capitalPath = rootPath.toUpperCase();
+        if (capitalPath != null){
             //本机文件 [0] 文件名 [1] 绝对路径 [2] 文件最后修改时间
             List<Object[]> messageList = new ArrayList<>();
-            messageList = this.getFilesNameByLocalMC(messageList, rootPath);
+            messageList = this.getFilesNameByLocalMC(messageList, capitalPath);
             for (Object[] message : messageList){ // 取本机文件绝对路径
                 FileMessage file = fileMessageDao.findFileMessageByAbsolutePath((String) message[1]);
                 if (file == null) {
