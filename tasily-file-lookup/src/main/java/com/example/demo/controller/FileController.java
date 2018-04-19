@@ -106,7 +106,8 @@ public class FileController {
         String labelType = code.containsKey("labelType")? code.getString("labelType") : null;
         String filePath = code.containsKey("path")? code.getString("path") : null;
         String type = code.containsKey("label")? code.getString("label") : null;
-        return fileService.findFilesByType(filePath, type, labelType);
+        List<FileMessage> list = fileService.findFilesByType(filePath, type, labelType);
+        return list;
     }
 
     /**

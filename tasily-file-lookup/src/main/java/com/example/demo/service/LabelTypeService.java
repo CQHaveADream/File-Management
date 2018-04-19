@@ -45,7 +45,6 @@ public class LabelTypeService {
     public JSONObject deleteLabelType(String labelName){
         LabelType labelType = labelTypeDao.findByName(labelName);
         if (labelType == null) return tasilyUtil.info("ThisLabelNotExist");
-
         labelTypeDao.deleteByName(labelName);
         return tasilyUtil.info("deleteLabelTypeSuccess");
     }
