@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
+
 /**
  * @author chenqian
  * @date 2018-04-03 22:13
@@ -31,7 +33,7 @@ public class FileService {
             fileMessageDao.deleteFileMessageByAbsolutePath(absolutePath);
             return tasilyUtil.info("TheFileDeleteSuccess");
         }
-        Process process = Runtime.getRuntime().exec("cmd /c " + absolutePath);
+        Process process = Runtime.getRuntime().exec("cmd /c start " + absolutePath.replace(" ", "\" \""));
         if (process != null)  return tasilyUtil.info("OpenTargetFileSuccess");
         return tasilyUtil.info("OpenTargetFileFail");
     }
@@ -42,10 +44,13 @@ public class FileService {
     }
 
     public List<FileMessage> findFilesByType(String path, String type, String labelType){
+
+        String newPth = path + "\\";
+
         if (labelType != null){
-            return fileMessageDao.findFilesLikeLabelAndLabelType(tasilyUtil.HandelPath(path), type, labelType);
+            return fileMessageDao.findFilesLikeLabelAndLabelType(tasilyUtil.HandelPath(newPth), type, labelType);
         }else {
-            return fileMessageDao.findFilesLikeLabel(tasilyUtil.HandelPath(path), type);
+            return fileMessageDao.findFilesLikeLabel(tasilyUtil.HandelPath(newPth), type);
         }
 
     }
