@@ -44,7 +44,9 @@ public class FileService {
     }
 
     public List<FileMessage> findFilesByType(String path, String type, String labelType){
+
         String newPth = path + "\\";
+
         if (labelType != null){
             return fileMessageDao.findFilesLikeLabelAndLabelType(tasilyUtil.HandelPath(newPth), type, labelType);
         }else {
